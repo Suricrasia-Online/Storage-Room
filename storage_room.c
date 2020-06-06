@@ -16,7 +16,7 @@
 #include "sys.h"
 
 #include "shader.h"
-const char* vshader = "#version 430\nvec2 y=vec2(1.,-1);\nvec4 x[4]={y.yyxx,y.xyxx,y.yxxx,y.xxxx};void main(){gl_Position=x[gl_VertexID];}";
+const char* vshader = "#version 430\nvoid main(){gl_Position=vec4(gl_VertexID%2==0?-1:1,gl_VertexID%4/2==0?-1:1,1,1);}";
 
 #define CANVAS_WIDTH 1920
 #define CANVAS_HEIGHT 1080
@@ -24,7 +24,7 @@ const char* vshader = "#version 430\nvec2 y=vec2(1.,-1);\nvec4 x[4]={y.yyxx,y.xy
 #define CHAR_BUFF_SIZE 256
 
 //#define DEBUG
-//#define TIME_RENDER
+#define TIME_RENDER
 #define SCISSORS
 
 static void quit_asm() {

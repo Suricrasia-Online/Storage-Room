@@ -17,7 +17,7 @@ float scene(vec3 p) {
 	float bx = -box(p, vec3(10,10,100));
 	float tx = tex(p*100.)/5000.*(abs(tex(p)+tex(p/5.))*.5+.5); //add very tiny bumps to the SDF itself, which will cause glossy reflections!
 	p = (fract(p/4.)-.5)*4.;
-	float sbx = box(p,vec3(0.65))-.06;
+	float sbx = box(p,vec3(0.8,.65,.65))-.06;
 	ref = sbx>bx?sin(length(p)*10.):1.;
 	return min(bx, sbx)+tx;
 }
@@ -25,7 +25,7 @@ float scene(vec3 p) {
 void main() {
 	vec2 uv = (gl_FragCoord.xy-vec2(960,540))/1080;
 	fragCol = vec4(0);
-	for (int j = 0; j < 500; j++) {
+	for (int j = 0; j < 100; j++) {
 		uv += vec2(tex(vec3(j)),tex(vec3(j+1)))/2160;
 
 		vec3 cam = normalize(vec3(.5-length(uv)*.5,uv));
