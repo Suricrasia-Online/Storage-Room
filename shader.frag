@@ -25,7 +25,7 @@ float scene(vec3 p) {
 void main() {
 	vec2 uv = (gl_FragCoord.xy-vec2(960,540))/1080;
 	fragCol = vec4(0);
-	for (int j = 0; j < 500; j++) {
+	for (int j = 0; j < 300; j++) {
 		uv += vec2(tex(vec3(j+1)),tex(vec3(j)))/2160;
 
 		vec3 cam = normalize(vec3(.5-dot(uv,uv)*.6,uv)) + vec3(0,tex(vec3(j)),tex(vec3(j+1)))*.01;
@@ -33,7 +33,7 @@ void main() {
 		bool hit = false;
 		float atten = 1.;
 		float dist;
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 150; i++) {
 			dist = scene(p);
 			if (dist*dist < 1e-6 && ref > -0.5) { //reflect within the raymarching loop!
 				hit = false;
