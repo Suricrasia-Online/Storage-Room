@@ -15,9 +15,9 @@ float tex(vec3 p) {
 float ref;
 float scene(vec3 p) {
 	float bx = -box(p, vec3(7.9));
-	float tx = tex(p*100.)/5000.*(abs(tex(p)+tex(p/5.))*.5+.5); //add very tiny bumps to the SDF itself, which will cause glossy reflections!
+	float tx = tex(p*100.)/5000.*(exp(tex(p)+tex(p*2)+tex(p/5))*.4+.5); //add very tiny bumps to the SDF itself, which will cause glossy reflections!
 	p = asin(sin(p));
-	float sbx = box(p,vec3(.6))-.02;
+	float sbx = box(p,vec3(.7,.6,.6))-.02;
 	ref = sbx>bx?sin(length(p)*20.):1.;
 	return min(bx, sbx)+tx;
 }
@@ -28,8 +28,8 @@ void main() {
 	for (int j = 0; j < 500; j++) {
 		uv += vec2(tex(vec3(j+1)),tex(vec3(j)))/2160;
 
-		vec3 cam = normalize(vec3(.5-length(uv)*.5,uv)) + vec3(0,tex(vec3(j)),tex(vec3(j+1)))*.01;
-		vec3 p = vec3(-6.5,2,-5) - vec3(0,tex(vec3(j)),tex(vec3(j+1)))*.03;
+		vec3 cam = normalize(vec3(.5-dot(uv,uv)*.6,uv)) + vec3(0,tex(vec3(j)),tex(vec3(j+1)))*.01;
+		vec3 p = vec3(-6.5,2,-5.2) - vec3(0,tex(vec3(j)),tex(vec3(j+1)))*.03;
 		bool hit = false;
 		float atten = 1.;
 		float dist;
