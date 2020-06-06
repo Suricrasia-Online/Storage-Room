@@ -106,7 +106,7 @@ $(PROJNAME) : $(PROJNAME)_opt.elf.packed
 %.xz : % Makefile
 	-rm $@
 	lzma --format=lzma -9 --extreme --lzma1=preset=9,lc=0,lp=0,pb=0,nice=183 --keep --stdout storage_room_opt.elf > storage_room_opt.elf.xz
-	./nicer.py $< -o $@
+	#./nicer.py $< -o $@
 
 %.packed : %.xz packer Makefile
 	cat ./vondehi/vondehi $< > $@
