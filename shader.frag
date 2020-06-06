@@ -15,7 +15,7 @@ float tex(vec3 p) {
 float ref;
 float scene(vec3 p) {
 	float bx = -box(p, vec3(7.9));
-	float tx = tex(p*100.)/5000.*(exp(tex(p)+tex(p*2)+tex(p/5))*.4+.5); //add very tiny bumps to the SDF itself, which will cause glossy reflections!
+	float tx = tex(p*100.)/5000.*(exp(tex(p)+tex(p*2)+tex(p/5))*.3+.6); //add very tiny bumps to the SDF itself, which will cause glossy reflections!
 	p = asin(sin(p));
 	float sbx = box(p,vec3(.7,.6,.6))-.02;
 	ref = sbx>bx?sin(length(p)*20.):1.;
