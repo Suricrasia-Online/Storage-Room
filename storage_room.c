@@ -20,8 +20,7 @@ const char* vshader = "#version 430\nvoid main(){gl_Position=vec4(gl_VertexID%2=
 
 #define CANVAS_WIDTH 1920
 #define CANVAS_HEIGHT 1080
-#define SCANLINE_SIZE 20
-#define CHAR_BUFF_SIZE 256
+#define SCANLINE_SIZE 10
 
 //#define DEBUG
 #define TIME_RENDER
@@ -37,7 +36,6 @@ GLuint p;
 
 bool rendered = false;
 bool flipped = false;
-bool compiled = false;
 
 #ifdef TIME_RENDER
 GTimer* gtimer;
@@ -58,7 +56,11 @@ static void compile_shader()
 	// compile shader
 	GLuint f = glCreateShader(GL_FRAGMENT_SHADER);
 
-	glShaderSource(f, 1, &shader_frag, NULL);
+	char* samples = getenv("SAMPLES");
+	if (samples == NULL) samples = "300";
+
+	const char* shader_frag_list[] = {"#version 420\n#define SAMPLES ", samples, "\n", shader_frag};
+	glShaderSource(f, 4, shader_frag_list, NULL);
 	glCompileShader(f);
 
 #ifdef DEBUG
@@ -100,6 +102,7 @@ static void compile_shader()
 	glAttachShader(p,v);
 	glAttachShader(p,f);
 	glLinkProgram(p);
+	glUseProgram(p);
 
 #ifdef DEBUG
 	GLint isLinked = 0;
@@ -117,6 +120,7 @@ static void compile_shader()
 #endif
 
 	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
 }
 
 static gboolean
@@ -125,12 +129,10 @@ on_render (GtkGLArea *glarea, GdkGLContext *context)
 	(void)context;
 	if (rendered || gtk_widget_get_allocated_width((GtkWidget*)glarea) < CANVAS_WIDTH) return TRUE;
 	if (!flipped) { gtk_gl_area_queue_render(glarea); flipped = true; return TRUE; }
-	if (!compiled) { compile_shader(); compiled = true; }
+	compile_shader();
 
 	rendered = true;
-	glUseProgram(p);
-	glBindVertexArray(vao);
-	glVertexAttrib1f(0, 0);
+	// glVertexAttrib1f(0, 0);
 
 #ifdef SCISSORS
   glEnable(GL_SCISSOR_TEST);

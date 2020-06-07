@@ -1,4 +1,3 @@
-#version 420
 out vec4 fragCol;
 
 float box(vec3 p, vec3 d) {
@@ -14,8 +13,8 @@ float tex(vec3 p) {
 
 float ref;
 float scene(vec3 p) {
-	float bx = -box(p, vec3(7.9));
 	float tx = tex(p*100.)/5000.*(exp(tex(p)+tex(p*2)+tex(p/5))*.3+.6); //add very tiny bumps to the SDF itself, which will cause glossy reflections!
+	float bx = -box(p, vec3(7.9));
 	p = asin(sin(p));
 	float sbx = box(p,vec3(.7,.6,.6))-.02;
 	ref = sbx>bx?sin(length(p)*20.):1.;
@@ -23,20 +22,17 @@ float scene(vec3 p) {
 }
 
 void main() {
-	vec2 uv = (gl_FragCoord.xy-vec2(960,540))/1080;
 	fragCol = vec4(0);
-	for (int j = 0; j < 300; j++) {
-		uv += vec2(tex(vec3(j+1)),tex(vec3(j)))/2160;
+	for (int j = 0; j < SAMPLES; j++) {
+		vec2 uv = (gl_FragCoord.xy-vec2(960,540))/1080 + vec2(tex(vec3(j+1)),tex(vec3(j)))/2160;
 
 		vec3 cam = normalize(vec3(.5-dot(uv,uv)*.6,uv)) + vec3(0,tex(vec3(j)),tex(vec3(j+1)))*.01;
 		vec3 p = vec3(-6.5,2,-5.2) - vec3(0,tex(vec3(j)),tex(vec3(j+1)))*.03;
-		bool hit = false;
 		float atten = 1.;
 		float dist;
 		for (int i = 0; i < 150; i++) {
 			dist = scene(p);
-			if (dist*dist < 1e-6 && ref > -0.5) { //reflect within the raymarching loop!
-				hit = false;
+			if (dist*dist<1e-6 && ref > -0.5) { //reflect within the raymarching loop!
 				mat3 k = mat3(p,p,p)-mat3(0.01);
 				vec3 n = normalize(scene(p)-vec3(scene(k[0]),scene(k[1]),scene(k[2])));
 				atten *= 1.-abs(dot(cam,n))*.98;
