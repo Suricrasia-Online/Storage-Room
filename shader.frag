@@ -24,7 +24,7 @@ float scene(vec3 p) {
 void main() {
 	fragCol = vec4(0);
 	for (int j = 0; j < SAMPLES; j++) {
-		vec2 uv = (gl_FragCoord.xy-vec2(960,540))/1080 + vec2(tex(vec3(j+1)),tex(vec3(j)))/2160;
+		vec2 uv = (gl_FragCoord.xy-vec2(1000,500))/1000 + vec2(tex(vec3(j+1)),tex(vec3(j)))/2000;
 
 		vec3 cam = normalize(vec3(.5-dot(uv,uv)*.6,uv)) + vec3(0,tex(vec3(j)),tex(vec3(j+1)))*.01;
 		vec3 p = vec3(-6.5,2,-5.2) - vec3(0,tex(vec3(j)),tex(vec3(j+1)))*.03;
